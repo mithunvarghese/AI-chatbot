@@ -16,6 +16,12 @@ app.get('/', (req: Request, res: Response) => {
     })
 })
 
+app.get('/test', (req: Request, res: Response) => {
+    res.send({
+        message: "hello World"
+    })
+})
+
 
 app.listen(3000, () => {
     console.log("Here it started")
