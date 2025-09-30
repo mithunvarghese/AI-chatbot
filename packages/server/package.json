@@ -3,7 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
-    "scripts": {
+  "scripts": {
     "start": "bun run index.ts",
     "dev": "bun --watch run index.ts"
   },
@@ -15,6 +15,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0"
   }
 }
