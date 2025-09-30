@@ -5,12 +5,12 @@ function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/hello')
+    fetch('/api/test')
     .then(res => res.json())
     .then(data => setMessage(data.message))
   }, []);
 
-  return <p>{message}</p>
+  return <p className="font-bold text-4xl p-5">{message}</p>
 }
 
 export default App 
