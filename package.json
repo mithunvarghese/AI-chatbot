@@ -13,5 +13,8 @@
   "peerDependencie s": {
     "typescript": "^5"
   },
-  "workspaces": ["packages/*"]
+  "workspaces": ["packages/*"],
+  "dependencies": {
+    "zod": "^4.1.11"
+  }
 }
