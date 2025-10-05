@@ -5,6 +5,7 @@ import { chatService } from '../Services/ChatService';
 export const chatController = {
 
     async sendMessage(req: Request, res: Response) {
+        console.log(req.body)
         const {prompt, conversationID} = req.body;
         const chatRequestSchemaValidation = ChatSchema.safeParse(req.body);
         if(!chatRequestSchemaValidation.success) {
