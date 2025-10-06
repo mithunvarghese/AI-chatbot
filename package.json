@@ -15,6 +15,7 @@
   },
   "workspaces": ["packages/*"],
   "dependencies": {
+    "axios": "^1.12.2",
     "zod": "^4.1.11"
   }
 }

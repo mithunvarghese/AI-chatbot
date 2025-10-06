@@ -1,6 +1,6 @@
 import type {Request, Response} from 'express'
-import { ChatSchema } from '../schema/ChatSchema';
 import { chatService } from '../Services/ChatService';
+import { ChatSchema } from '../schema/ChatSchema';
 
 export const chatController = {
 
@@ -8,6 +8,7 @@ export const chatController = {
         console.log(req.body)
         const {prompt, conversationID} = req.body;
         const chatRequestSchemaValidation = ChatSchema.safeParse(req.body);
+        console.log(chatRequestSchemaValidation)
         if(!chatRequestSchemaValidation.success) {
             res.status(400).json(chatRequestSchemaValidation.error.format());
             // console.log("It does execute:: ")
