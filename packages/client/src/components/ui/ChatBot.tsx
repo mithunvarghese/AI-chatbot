@@ -2,7 +2,8 @@ import { FaArrowUp } from 'react-icons/fa';
 import { Button } from './button';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ReactMarkDown from 'react-markdown'
 
 type FormData = {
    prompt: string;
@@ -18,14 +19,24 @@ type Message = {
 const ChatBot = () => {
    const { register, handleSubmit, reset, formState } = useForm<FormData>();
    const conversationId = useRef(crypto.randomUUID());
-   const [messages, setMessages] = useState<Message[]>([])
+   const [messages, setMessages] = useState<Message[]>([]);
+
+   const [isBotTyping, setIsTyping] = useState<boolean>(false);
+   const formRef = useRef<HTMLFormElement | null>(null);
+
+   useEffect(() => {
+      formRef?.current?.scrollIntoView({behavior: 'smooth'})
+   }, [messages])
+
    const onSubmit = async ({prompt}: FormData) => {
+      setIsTyping(true);
       setMessages(prev => [...prev, {content: prompt, role: 'user'}])
       reset();
       const {data} = await axios.post<ChatResponse>('/api/chat',{
          prompt, conversationID: conversationId.current
       });
       setMessages(prev => [...prev, {content: data.message, role:'bot'}])
+      setIsTyping(false);
       console.log("Result from server :::: ", data)
    };
    return (
@@ -34,7 +45,17 @@ const ChatBot = () => {
             {messages.map((message, index) => 
                (<p className={`px-3 py-1 rounded-3xl ${message.role === 'user' ? 
                'bg-emerald-600 text-white self-end' : 
-               'bg-gray-200 text-black self-start'}`} key={index}>{message.content}</p>))}
+               'bg-gray-200 text-black self-start'}`} key={index}>
+               <ReactMarkDown>{message.content}</ReactMarkDown>
+               </p>))}
+               {isBotTyping && (
+                  <div className='flex self-start gap-2 px-3 py-3'>
+                     <div className='w-2 h-2 rounded-full bg-orange-800 animate-pulse'></div>
+                     <div className='w-2 h-2 rounded-full bg-orange-800 animate-pulse [animation-delay: 0.2]'></div>
+                     <div className='w-2 h-2 rounded-full bg-orange-800 animate-pulse [animation-delay: 0.4]'></div>
+                  </div>
+
+               )}
          </div>
          <form
               onSubmit={handleSubmit(onSubmit)}
@@ -44,6 +65,7 @@ const ChatBot = () => {
                        handleSubmit(onSubmit)()
                    }
               }}
+              ref={formRef}
             className="flex flex-col gap-2 items-end border-2 rounded-3xl p-2"
          >
             <textarea
