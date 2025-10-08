@@ -22,16 +22,16 @@ const ChatBot = () => {
    const [messages, setMessages] = useState<Message[]>([]);
 
    const [isBotTyping, setIsTyping] = useState<boolean>(false);
-   const formRef = useRef<HTMLFormElement | null>(null);
+   const paragraphRef = useRef<HTMLParagraphElement | null>(null);
 
    useEffect(() => {
-      formRef?.current?.scrollIntoView({behavior: 'smooth'})
+      paragraphRef?.current?.scrollIntoView({behavior: 'smooth'})
    }, [messages])
 
    const onSubmit = async ({prompt}: FormData) => {
       setIsTyping(true);
       setMessages(prev => [...prev, {content: prompt, role: 'user'}])
-      reset();
+      reset({prompt: ''});
       const {data} = await axios.post<ChatResponse>('/api/chat',{
          prompt, conversationID: conversationId.current
       });
@@ -39,13 +39,23 @@ const ChatBot = () => {
       setIsTyping(false);
       console.log("Result from server :::: ", data)
    };
+   const onCopyMessage = (e: React.ClipboardEvent) => {
+      const selection = window.getSelection()?.toString().trim();
+      if (selection) {
+         e.preventDefault();
+         e.clipboardData.setData('text/plain', selection);
+      }
+   };
    return (
-      <div className='mb-2'>
-         <div className='flex flex-col gap-2 mb-3'>
+      <div className='flex flex-col h-full'>
+         <div className='flex flex-col flex-1 gap-2 mb-10 overflow-y-auto'>
             {messages.map((message, index) => 
                (<p className={`px-3 py-1 rounded-3xl ${message.role === 'user' ? 
                'bg-emerald-600 text-white self-end' : 
-               'bg-gray-200 text-black self-start'}`} key={index}>
+               'bg-gray-200 text-black self-start'}`} key={index}
+               onCopy={onCopyMessage}
+               ref={index === messages.length -1 ? paragraphRef : null}
+               >
                <ReactMarkDown>{message.content}</ReactMarkDown>
                </p>))}
                {isBotTyping && (
@@ -65,7 +75,6 @@ const ChatBot = () => {
                        handleSubmit(onSubmit)()
                    }
               }}
-              ref={formRef}
             className="flex flex-col gap-2 items-end border-2 rounded-3xl p-2"
          >
             <textarea

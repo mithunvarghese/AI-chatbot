@@ -5,7 +5,7 @@ function App() {
 
 
    return (
-      <div className="p-5">
+      <div className="p-4 h-screen w-full">
          <ChatBot></ChatBot>
       </div>
    );
